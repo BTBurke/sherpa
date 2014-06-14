@@ -1,0 +1,13 @@
+{
+	"ImportPath": "github.com/BTBurke/sherpa",
+	"GoVersion": "go1.2.1",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/golang/glog",
+			"Rev": "d1c4472bf2efd3826f2b5bdcc02d8416798d678c"
+		}
+	]
+}
