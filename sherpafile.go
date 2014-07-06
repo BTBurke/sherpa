@@ -1,7 +1,7 @@
 package sherpa
 
 import "encoding/json"
-import "ioutil"
+import "io/ioutil"
 import "fmt"
 
 // SherpaFile represents a single JSON record read from a Sherpa file
@@ -10,7 +10,7 @@ type SherpaFile struct {
 	Description  string       `json:"description"`
 	Version      string       `json:"version"`
 	Main         []string     `json:"main"`
-	License      string       `json:"string"`
+	License      string       `json:"license"`
 	Ignore       []string     `json:"ignore"`
 	Keywords     []string     `json:"keywords"`
 	Authors      []Author     `json:"authors"`
@@ -18,7 +18,7 @@ type SherpaFile struct {
 	Repository   Repository   `json:"repository"`
 	Dependencies []Dependency `json:"dependencies"`
 	OsVersions   []string     `json:"osVersions"`
-	Private      boolean      `json:"private"`
+	Private      bool         `json:"private"`
 	PrivateData  Privatedata  `json:"privateData"`
 }
 
@@ -78,7 +78,7 @@ type SherpaFileMap map[string]*SherpaRecord
 // 400   | Unable to read file      | File is missing or unable to be opened
 type SherpaFileError struct {
 	Type         string
-	Code         integer
+	Code         int32
 	Msg          string
 	Field        string
 	DeveloperMsg string
@@ -93,7 +93,7 @@ func SherpaRecordFromFile(filename string) (SherpaRecord, error) {
 
 	json, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, SherpaFileError{
+		return SherpaRecord{}, SherpaFileError{
 			Type:         "Unable to read file",
 			Code:         400,
 			Msg:          fmt.Sprintf("Unable to read file: %s", filename),
@@ -106,50 +106,50 @@ func SherpaRecordFromFile(filename string) (SherpaRecord, error) {
 	var sherpafile SherpaFile
 	record := SherpaRecord{&sherpafile, &meta}
 
-	err := SherpaRecordFromJSON(json, record)
+	err = SherpaRecordFromJSON(json, record)
 	if err != nil {
-		return nil, err
+		return SherpaRecord{}, err
 	}
 
 	return record, nil
 
 }
 
-func SherpaRecordFromJSON(json []bytes, record SherpaRecord) error {
+func SherpaRecordFromJSON(jsonBlob []byte, record SherpaRecord) error {
 
-	err = json.Unmarshal(json, record.Sherpa)
+	err := json.Unmarshal(jsonBlob, record.Sherpa)
 	if err != nil {
-		return nil, SherpaFileError{
+		return SherpaFileError{
 			Type:         "Unable to read file",
 			Code:         400,
-			Msg:          fmt.Sprintf("Unable to read file: %s", filename),
+			Msg:          fmt.Sprintf("Unable to read file: %s", record.Meta.OnDiskLocation),
 			Field:        "",
-			DeveloperMsg: fmt.Sprintf("Failed to parse json []bytes from file: %s", filename),
-			CliHelpMsg:   fmt.Sprintf("Failed to open Sherpa file: %s. Try running the last Sherpa command again.", filename)}
+			DeveloperMsg: fmt.Sprintf("Failed to parse json []bytes from file: %s", record.Meta.OnDiskLocation),
+			CliHelpMsg:   fmt.Sprintf("Failed to open Sherpa file: %s. Try running the last Sherpa command again.", record.Meta.OnDiskLocation)}
 	}
 
-	return record, nil
+	return nil
 
 }
 
 // ValidateSherpaRecord runs a series of validators, updating the SherpaRecord metadata
 // will all found errors and returning the total number of errors found.
-func ValidateSherpaRecord(record SherpaRecord) int {
-	valFuncs := makeAllValidators()
-
-	var err error
-	for i := 0; i < len(valFuncs); i++ {
-		err = valFuncs[i](record)
-		if err != nil {
-			record.Meta.Errors = append(record.Meta.Errors, err)
-		}
-	}
-}
-
-func makeAllValidators() []SherpaValidator {
-
-	validateName = func(s SherpaFile) error {
-		//f len(name)
-	}
-
-}
+// func ValidateSherpaRecord(record SherpaRecord) int {
+// 	valFuncs := makeAllValidators()
+//
+// 	var err error
+// 	for i := 0; i < len(valFuncs); i++ {
+// 		err = valFuncs[i](record)
+// 		if err != nil {
+// 			record.Meta.Errors = append(record.Meta.Errors, err)
+// 		}
+// 	}
+// }
+//
+// func makeAllValidators() []SherpaValidator {
+//
+// 	validateName = func(s SherpaFile) error {
+// 		//f len(name)
+// 	}
+//
+// }

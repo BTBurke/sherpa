@@ -1,4 +1,4 @@
-package scandir
+package sherpa
 
 //import "fmt"
 import "path/filepath"

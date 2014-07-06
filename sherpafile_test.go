@@ -1,7 +1,7 @@
-package local_test
+package sherpa_test
 
 import (
-	. "github.com/BTBurke/sherpa/local"
+	. "github.com/BTBurke/sherpa"
 
 	"encoding/json"
 	. "github.com/onsi/ginkgo"
@@ -11,12 +11,11 @@ import (
 var _ = Describe("Sherpafile", func() {
 
 	var (
-		TestSherpaCorrect   SherpaFile
-		TestSherpaIncorrect SherpaFile
-		CorrectJson         []bytes
-		Author1             Author
-		Dep1                Dependency
-		Privatedata1        Privatedata
+		SCorrect     SherpaFile
+		CorrectJson  []byte
+		Author1      Author
+		Dep1         Dependency
+		Privatedata1 Privatedata
 	)
 
 	BeforeEach(func() {
@@ -36,7 +35,7 @@ var _ = Describe("Sherpafile", func() {
 			Url:  "https://github.com/BTBurke/sherpa/SherpaPrivate",
 			File: "test_private_data.json",
 		}
-		TestSherpaCorrect = SherpaFile{
+		SCorrect = SherpaFile{
 			Name:        "BTBurke/Test",
 			Description: "Test description",
 			Version:     "0.1.0",
@@ -47,11 +46,11 @@ var _ = Describe("Sherpafile", func() {
 			Homepage:    "https://sherpa.io",
 			Repository: Repository{
 				Type: "git",
-				Url:  " https://github.com/BTBurke/sherpa",
+				Url:  "https://github.com/BTBurke/sherpa",
 			},
 			Dependencies: []Dependency{Dep1},
 			OsVersions:   []string{"osx", "linux", "windows"},
-			Private:      False,
+			Private:      false,
 			PrivateData:  Privatedata1,
 		}
 		CorrectJson = []byte(`{
@@ -93,8 +92,9 @@ var _ = Describe("Sherpafile", func() {
 				var Test1 SherpaFile
 				err := json.Unmarshal(CorrectJson, &Test1)
 				Ω(err).ShouldNot(HaveOccurred())
-				Expect(sherpaTest1.Name).To(Equal("Bryan Burke"))
+				Expect(Test1).To(Equal(SCorrect))
 			})
 		})
+
 	})
 })

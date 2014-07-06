@@ -1,4 +1,4 @@
-package scandir
+package sherpa
 
 import "testing"
 import "io/ioutil"
