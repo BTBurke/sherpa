@@ -60,10 +60,6 @@ type SherpaRecord struct {
 	Meta   *SherpaMetadata
 }
 
-// SherpaValidator is a type alias for a function that takes a Sherpa File
-// and validates some portion of the data structure, returning an error
-type SherpaValidator func(s SherpaFile) error
-
 // SherpaFileMap is a data structure that associates a SherpaFile name with
 // the SherpaFile and associated metadata.  Methods on this data structure
 // check errors at the dependency graph level, e.g., missing or circular dependencies
@@ -124,7 +120,7 @@ func SherpaRecordFromJSON(jsonBlob []byte, record SherpaRecord) error {
 			Code:         400,
 			Msg:          fmt.Sprintf("Unable to read file: %s", record.Meta.OnDiskLocation),
 			Field:        "",
-			DeveloperMsg: fmt.Sprintf("Failed to parse json []bytes from file: %s", record.Meta.OnDiskLocation),
+			DeveloperMsg: fmt.Sprintf("Failed to parse json []byte from file: %s", record.Meta.OnDiskLocation),
 			CliHelpMsg:   fmt.Sprintf("Failed to open Sherpa file: %s. Try running the last Sherpa command again.", record.Meta.OnDiskLocation)}
 	}
 
