@@ -87,7 +87,7 @@ var _ = Describe("Sherpafile", func() {
 	})
 
 	Describe("Marshaling/Unmarshaling JSON", func() {
-		Context("Idiot check for test data", func() {
+		Context("When setting up tests, an idiot check for test data", func() {
 			It("Should serialize/deserialize test JSON into the test Struct", func() {
 				var Test1 SherpaFile
 				err := json.Unmarshal(CorrectJson, &Test1)
@@ -96,5 +96,13 @@ var _ = Describe("Sherpafile", func() {
 			})
 		})
 
+		Context("When parsing JSON-formatted []byte to a SherpaRecord", func() {
+			It("Should decode valid JSON to a SherpaRecord", func() {
+				var Test2 SherpaRecord
+				err := SherpaRecordFromJSON(CorrectJson, Test2)
+				Ω(err).ShouldNot(HaveOccurred())
+				Expect(Test2.Sherpa).To(Equal(SCorrect))
+			})
+		})
 	})
 })
